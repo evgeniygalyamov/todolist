@@ -1,0 +1,25 @@
+.App {
+    padding: 30px;
+    display: flex;
+}
+
+.App > div {
+    margin-right: 50px;
+}
+
+.error {
+    border: 2px solid red;
+}
+
+.errorMessage {
+    color: red;
+}
+
+.filteredBtn {
+    background-color: rgb(8, 27, 121);
+    color: white;
+}
+
+.isDone {
+    opacity: 0.2;
+}
