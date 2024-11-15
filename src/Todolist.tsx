@@ -1,24 +1,19 @@
 import React, {ChangeEvent, useState, KeyboardEvent} from "react";
 import {Button} from "./Button";
-import {FilteredTasksType} from "./App";
+import {FilteredTasksType, TasksType} from "./App";
 
 type TodolistType = {
+    todolistID: string
     title: string
     tasks: TasksType[]
-    filteredTasks: (filterValue: FilteredTasksType) => void
-    removeTask: (taskId: string) => void
-    changeStatusTask: (taskId: string, isDone: boolean) => void
-    addTask: (title: string) => void
-}
-
-export type TasksType = {
-    id: string
-    title: string
-    isDone: boolean
+    filteredTasks: (todolistID: string, filterValue: FilteredTasksType) => void
+    removeTask: (todolistID: string, taskId: string) => void
+    changeStatusTask: (todolistID: string, taskId: string, isDone: boolean) => void
+    addTask: (todolistID: string, title: string) => void
 }
 
 
-export const Todolist = ({title, tasks, filteredTasks, removeTask, changeStatusTask, addTask}: TodolistType) => {
+export const Todolist = ({todolistID, title, tasks, filteredTasks, removeTask, changeStatusTask, addTask}: TodolistType) => {
 
     const [newTask, setNewTask] = useState("")
     const [error, setError] = useState(false)
@@ -32,22 +27,22 @@ export const Todolist = ({title, tasks, filteredTasks, removeTask, changeStatusT
                         <input type="checkbox" checked={t.isDone}
                                onChange={(e) => changeStatusTaskHandler(t.id, e)}/>
                         <span>{t.title}</span>
-                        <Button onClick={() => removeTask(t.id)} title={"x"}/>
+                        <Button onClick={() => removeTask(todolistID, t.id)} title={"x"}/>
                     </li>
                 )
             }
         ) : <div>Todolist required</div>
 
     const filteredTaskAll = (filterValue: FilteredTasksType) => {
-        filteredTasks(filterValue)
+        filteredTasks(todolistID, filterValue)
         setFilterBtn(filterValue)
     }
     const changeStatusTaskHandler = (taskId: string, e: ChangeEvent<HTMLInputElement>) => {
-        changeStatusTask(taskId, e.currentTarget.checked)
+        changeStatusTask(todolistID, taskId, e.currentTarget.checked)
     }
     const addTaskHandler = () => {
         if (newTask.trim()) {
-            addTask(newTask.trim())
+            addTask(todolistID, newTask.trim())
             setNewTask("")
         } else {
             setError(true)
@@ -55,7 +50,7 @@ export const Todolist = ({title, tasks, filteredTasks, removeTask, changeStatusT
     }
     const onKeyInputHandler = (e: KeyboardEvent<HTMLInputElement>) => {
         if (e.key === "Enter") {
-            addTask(newTask)
+            addTask(todolistID, newTask)
             setNewTask("")
         }
     }
