@@ -1,6 +1,7 @@
-import React, {ChangeEvent, useState, KeyboardEvent} from "react";
+import React, {ChangeEvent, useState} from "react";
 import {Button} from "./Button";
 import {FilteredTasksType, TasksType} from "./App";
+import {AddItemInput} from "./AddItemInput";
 
 type TodolistType = {
     todolistID: string
@@ -10,13 +11,22 @@ type TodolistType = {
     removeTask: (todolistID: string, taskId: string) => void
     changeStatusTask: (todolistID: string, taskId: string, isDone: boolean) => void
     addTask: (todolistID: string, title: string) => void
+    removeTodolist: (todolistID: string) => void
 }
 
 
-export const Todolist = ({todolistID, title, tasks, filteredTasks, removeTask, changeStatusTask, addTask}: TodolistType) => {
+export const Todolist = ({
+                             todolistID,
+                             title,
+                             tasks,
+                             filteredTasks,
+                             removeTask,
+                             changeStatusTask,
+                             addTask,
+                             removeTodolist,
+                         }: TodolistType) => {
 
-    const [newTask, setNewTask] = useState("")
-    const [error, setError] = useState(false)
+
     const [filterBtn, setFilterBtn] = useState("all")
 
 
@@ -40,48 +50,29 @@ export const Todolist = ({todolistID, title, tasks, filteredTasks, removeTask, c
     const changeStatusTaskHandler = (taskId: string, e: ChangeEvent<HTMLInputElement>) => {
         changeStatusTask(todolistID, taskId, e.currentTarget.checked)
     }
-    const addTaskHandler = () => {
-        if (newTask.trim()) {
-            addTask(todolistID, newTask.trim())
-            setNewTask("")
-        } else {
-            setError(true)
+    const addTaskHandler = (newItem: string) => {
+        if (newItem.trim()) {
+            addTask(todolistID, newItem)
         }
-    }
-    const onKeyInputHandler = (e: KeyboardEvent<HTMLInputElement>) => {
-        if (e.key === "Enter") {
-            addTask(todolistID, newTask)
-            setNewTask("")
-        }
-    }
-    const onChangeInputHandler = (e: ChangeEvent<HTMLInputElement>) => {
-        if (e.currentTarget) {
-            setNewTask(e.currentTarget.value)
-            setError(false)
-        }
-    }
-
-
-    return (
-        <div>
-            <h3>{title}</h3>
-            <div>
-                <input value={newTask}
-                       onChange={onChangeInputHandler}
-                       onKeyDown={onKeyInputHandler}
-                       className={error ? "error" : ""}
-                />
-                <Button title={"+"} onClick={addTaskHandler}/>
-                {error && <h4 className={"errorMessage"}>input is empty</h4>}
-            </div>
-            <ul>
-                {tasksList}
-            </ul>
-            <div>
-                <Button className={filterBtn === "all" ? "filteredBtn" : ""} onClick={() => filteredTaskAll("all")} title={"All"}/>
-                <Button className={filterBtn === "active" ? "filteredBtn" : ""} onClick={() => filteredTaskAll("active")} title={"Active"}/>
-                <Button className={filterBtn === "completed" ? "filteredBtn" : ""} onClick={() => filteredTaskAll("completed")} title={"Completed"}/>
-            </div>
-        </div>
-    )
 }
+
+        return (
+            <div>
+                <h3>{title}
+                    <Button title={"x"} onClick={() => removeTodolist(todolistID)}/>
+                </h3>
+                <AddItemInput addItem={addTaskHandler}/>
+                <ul>
+                    {tasksList}
+                </ul>
+                <div>
+                    <Button className={filterBtn === "all" ? "filteredBtn" : ""} onClick={() => filteredTaskAll("all")}
+                            title={"All"}/>
+                    <Button className={filterBtn === "active" ? "filteredBtn" : ""}
+                            onClick={() => filteredTaskAll("active")} title={"Active"}/>
+                    <Button className={filterBtn === "completed" ? "filteredBtn" : ""}
+                            onClick={() => filteredTaskAll("completed")} title={"Completed"}/>
+                </div>
+            </div>
+        )
+    }
