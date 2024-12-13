@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import './App.css';
 import {Todolist} from "./Todolist";
 import {v1} from "uuid";
+import {AddItemInput} from "./AddItemInput";
 
 export type TasksType = {
     id: string
@@ -78,6 +79,13 @@ function App() {
         setTasks(nextState)
     }
 
+    const changeTaskTitle = (todolistID: string, taskId: string, title: string) => {
+        const nextState: TasksStateType = {
+            ...tasks,
+            [todolistID]: tasks[todolistID].map(t => t.id === taskId ? {...t, title} : t)
+        }
+        setTasks(nextState)
+    }
 
     // Todolist
 
@@ -85,11 +93,16 @@ function App() {
         setTodolists(todolists.filter(tl => tl.id !== todolistID))
         delete tasks[todolistID]
     }
-
     const addTodolist = (title: string) => {
         const todolistID = v1()
         const newTodolist: TodolistType = {id: todolistID, title, filter: "all"}
         setTodolists([newTodolist, ...todolists])
+        setTasks({...tasks, [todolistID]: []})
+    }
+
+    const changeTodolistTitle = (todolistID: string, title: string) => {
+        const NextState: TodolistType[] = todolists.map(tl => tl.id === todolistID ? {...tl, title} : tl)
+        setTodolists(NextState)
     }
 
 
@@ -114,12 +127,16 @@ function App() {
                 changeStatusTask={changeStatusTask}
                 addTask={addTask}
                 removeTodolist={removeTodolist}
+                changeTaskTitle={changeTaskTitle}
+                changeTodolistTitle={changeTodolistTitle }
+
             />
         )
     })
 
     return (
         <div className="App">
+            <AddItemInput addItem={addTodolist}/>
             {todolistComponents}
         </div>
     );

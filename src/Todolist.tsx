@@ -2,6 +2,7 @@ import React, {ChangeEvent, useState} from "react";
 import {Button} from "./Button";
 import {FilteredTasksType, TasksType} from "./App";
 import {AddItemInput} from "./AddItemInput";
+import {EditableSpan} from "./EditableSpan";
 
 type TodolistType = {
     todolistID: string
@@ -12,6 +13,8 @@ type TodolistType = {
     changeStatusTask: (todolistID: string, taskId: string, isDone: boolean) => void
     addTask: (todolistID: string, title: string) => void
     removeTodolist: (todolistID: string) => void
+    changeTaskTitle: (todolistID: string, taskId: string, title: string) => void
+    changeTodolistTitle: (todolistID: string, title: string) => void
 }
 
 
@@ -24,10 +27,14 @@ export const Todolist = ({
                              changeStatusTask,
                              addTask,
                              removeTodolist,
+                             changeTaskTitle,
+                             changeTodolistTitle
                          }: TodolistType) => {
 
 
     const [filterBtn, setFilterBtn] = useState("all")
+
+
 
 
     const tasksList = tasks.length
@@ -36,7 +43,7 @@ export const Todolist = ({
                     <li key={t.id} className={t.isDone ? "isDone" : ""}>
                         <input type="checkbox" checked={t.isDone}
                                onChange={(e) => changeStatusTaskHandler(t.id, e)}/>
-                        <span>{t.title}</span>
+                        <EditableSpan title={t.title} addNewTitle={(newTitle) => changeTaskTitle(todolistID, t.id, newTitle)}/>
                         <Button onClick={() => removeTask(todolistID, t.id)} title={"x"}/>
                     </li>
                 )
@@ -54,25 +61,29 @@ export const Todolist = ({
         if (newItem.trim()) {
             addTask(todolistID, newItem)
         }
-}
-
-        return (
-            <div>
-                <h3>{title}
-                    <Button title={"x"} onClick={() => removeTodolist(todolistID)}/>
-                </h3>
-                <AddItemInput addItem={addTaskHandler}/>
-                <ul>
-                    {tasksList}
-                </ul>
-                <div>
-                    <Button className={filterBtn === "all" ? "filteredBtn" : ""} onClick={() => filteredTaskAll("all")}
-                            title={"All"}/>
-                    <Button className={filterBtn === "active" ? "filteredBtn" : ""}
-                            onClick={() => filteredTaskAll("active")} title={"Active"}/>
-                    <Button className={filterBtn === "completed" ? "filteredBtn" : ""}
-                            onClick={() => filteredTaskAll("completed")} title={"Completed"}/>
-                </div>
-            </div>
-        )
     }
+    const changeTodolistTitleHandler = (title: string) => {
+        changeTodolistTitle(todolistID, title)
+    }
+
+    return (
+        <div>
+            <h3>
+                <EditableSpan title={title} addNewTitle={changeTodolistTitleHandler}/>
+                <Button title={"x"} onClick={() => removeTodolist(todolistID)}/>
+            </h3>
+            <AddItemInput addItem={addTaskHandler}/>
+            <ul>
+                {tasksList}
+            </ul>
+            <div>
+                <Button className={filterBtn === "all" ? "filteredBtn" : ""} onClick={() => filteredTaskAll("all")}
+                        title={"All"}/>
+                <Button className={filterBtn === "active" ? "filteredBtn" : ""}
+                        onClick={() => filteredTaskAll("active")} title={"Active"}/>
+                <Button className={filterBtn === "completed" ? "filteredBtn" : ""}
+                        onClick={() => filteredTaskAll("completed")} title={"Completed"}/>
+            </div>
+        </div>
+    )
+}
