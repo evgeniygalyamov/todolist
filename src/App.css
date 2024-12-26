@@ -1,11 +1,11 @@
-.App {
-    padding: 30px;
-    display: flex;
-}
+/*.App {*/
+/*    padding: 30px;*/
+/*    display: flex;*/
+/*}*/
 
-.App > div {
-    margin-right: 50px;
-}
+/*.App > div {*/
+/*    margin-right: 50px;*/
+/*}*/
 
 .error {
     border: 2px solid red;
@@ -22,4 +22,9 @@
 
 .isDone {
     opacity: 0.2;
+}
+
+
+.add-form {
+
 }

@@ -3,6 +3,15 @@ import './App.css';
 import {Todolist} from "./Todolist";
 import {v1} from "uuid";
 import {AddItemInput} from "./AddItemInput";
+import AppBar from '@mui/material/AppBar'
+import Toolbar from '@mui/material/Toolbar'
+import Button from '@mui/material/Button'
+import IconButton from '@mui/material/IconButton'
+import MenuIcon from '@mui/icons-material/Menu'
+import {Box, Container, Grid2, Paper} from "@mui/material";
+import {MenuButton} from "./MenuButton";
+import {createTheme, ThemeProvider } from '@mui/material/styles'
+
 
 export type TasksType = {
     id: string
@@ -117,28 +126,54 @@ function App() {
         }
 
         return (
-            <Todolist
-                key={t.id}
-                todolistID={t.id}
-                title={t.title}
-                tasks={currentTasks}
-                filteredTasks={filteredTasks}
-                removeTask={removeTask}
-                changeStatusTask={changeStatusTask}
-                addTask={addTask}
-                removeTodolist={removeTodolist}
-                changeTaskTitle={changeTaskTitle}
-                changeTodolistTitle={changeTodolistTitle }
+            <Grid2 key={t.id}>
+                <Paper elevation={2} sx={{p: "15px"}}>
+                    <Todolist
+                        key={t.id}
+                        todolistID={t.id}
+                        title={t.title}
+                        tasks={currentTasks}
+                        filteredTasks={filteredTasks}
+                        removeTask={removeTask}
+                        changeStatusTask={changeStatusTask}
+                        addTask={addTask}
+                        removeTodolist={removeTodolist}
+                        changeTaskTitle={changeTaskTitle}
+                        changeTodolistTitle={changeTodolistTitle}
+                    />
+                </Paper>
+            </Grid2>
 
-            />
         )
     })
 
+    const theme = createTheme
+
     return (
-        <div className="App">
-            <AddItemInput addItem={addTodolist}/>
-            {todolistComponents}
-        </div>
+        <ThemeProvider theme={theme}>
+            <div className="App">
+                <AppBar position="static">
+                    <Toolbar sx={{display: 'flex', justifyContent: 'space-between'}}>
+                        <IconButton color="inherit">
+                            <MenuIcon/>
+                        </IconButton>
+                        <Box>
+                            <MenuButton color="inherit">Login</MenuButton>
+                            <MenuButton color="inherit">Logout</MenuButton>
+                            <MenuButton backGround={"#054B62"} color="inherit">faq</MenuButton>
+                        </Box>
+                    </Toolbar>
+                </AppBar>
+                <Container fixed>
+                    <Grid2 container sx={{p: "25px 0"}}>
+                        <AddItemInput addItem={addTodolist}/>
+                    </Grid2>
+                    <Grid2 container spacing={3}>
+                        {todolistComponents}
+                    </Grid2>
+                </Container>
+            </div>
+        </ThemeProvider>
     );
 }
 

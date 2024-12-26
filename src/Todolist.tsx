@@ -1,8 +1,12 @@
 import React, {ChangeEvent, useState} from "react";
-import {Button} from "./Button";
 import {FilteredTasksType, TasksType} from "./App";
 import {AddItemInput} from "./AddItemInput";
 import {EditableSpan} from "./EditableSpan";
+import {Button, IconButton, Stack, Checkbox, List, ListItem} from "@mui/material";
+import DeleteIcon from '@mui/icons-material/Delete';
+import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
+import BookmarkIcon from '@mui/icons-material/Bookmark';
+
 
 type TodolistType = {
     todolistID: string
@@ -35,17 +39,31 @@ export const Todolist = ({
     const [filterBtn, setFilterBtn] = useState("all")
 
 
-
-
     const tasksList = tasks.length
         ? tasks.map(t => {
                 return (
-                    <li key={t.id} className={t.isDone ? "isDone" : ""}>
-                        <input type="checkbox" checked={t.isDone}
-                               onChange={(e) => changeStatusTaskHandler(t.id, e)}/>
-                        <EditableSpan title={t.title} addNewTitle={(newTitle) => changeTaskTitle(todolistID, t.id, newTitle)}/>
-                        <Button onClick={() => removeTask(todolistID, t.id)} title={"x"}/>
-                    </li>
+                    <ListItem
+                        disablePadding
+                        key={t.id}
+                        className={t.isDone ? "isDone" : ""}
+                        secondaryAction={
+                            <IconButton
+                                size={"small"}
+                                onClick={() => removeTask(todolistID, t.id)}
+                                aria-label="delete">
+                                <DeleteIcon/>
+                            </IconButton>
+                        }>
+                        <Checkbox
+                            color={"warning"}
+                            checked={t.isDone}
+                            onChange={(e) => changeStatusTaskHandler(t.id, e)}
+                            icon={<BookmarkBorderIcon/>}
+                            checkedIcon={<BookmarkIcon/>}
+                        />
+                        <EditableSpan title={t.title}
+                                      addNewTitle={(newTitle) => changeTaskTitle(todolistID, t.id, newTitle)}/>
+                    </ListItem>
                 )
             }
         ) : <div>Todolist required</div>
@@ -70,20 +88,39 @@ export const Todolist = ({
         <div>
             <h3>
                 <EditableSpan title={title} addNewTitle={changeTodolistTitleHandler}/>
-                <Button title={"x"} onClick={() => removeTodolist(todolistID)}/>
+                <IconButton
+                    onClick={() => removeTodolist(todolistID)}
+                    aria-label="delete">
+                    <DeleteIcon/>
+                </IconButton>
             </h3>
             <AddItemInput addItem={addTaskHandler}/>
-            <ul>
+            <List>
                 {tasksList}
-            </ul>
-            <div>
-                <Button className={filterBtn === "all" ? "filteredBtn" : ""} onClick={() => filteredTaskAll("all")}
-                        title={"All"}/>
-                <Button className={filterBtn === "active" ? "filteredBtn" : ""}
-                        onClick={() => filteredTaskAll("active")} title={"Active"}/>
-                <Button className={filterBtn === "completed" ? "filteredBtn" : ""}
-                        onClick={() => filteredTaskAll("completed")} title={"Completed"}/>
-            </div>
+            </List>
+            <Stack direction="row" spacing={0.6}>
+                <Button
+                    size="small"
+                    variant="contained"
+                    disableElevation
+                    color={filterBtn === "all" ? "warning" : "primary"}
+                    onClick={() => filteredTaskAll("all")}
+                >All</Button>
+                <Button
+                    size="small"
+                    variant="contained"
+                    disableElevation
+                    color={filterBtn === "active" ? "warning" : "primary"}
+                    onClick={() => filteredTaskAll("active")}
+                >Active</Button>
+                <Button
+                    size="small"
+                    variant="contained"
+                    disableElevation
+                    color={filterBtn === "completed" ? "warning" : "primary"}
+                    onClick={() => filteredTaskAll("completed")}
+                >Completed</Button>
+            </Stack>
         </div>
     )
 }

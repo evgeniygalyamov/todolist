@@ -1,5 +1,7 @@
-import {Button} from "./Button";
+import Button from '@mui/material/Button';
 import React, {ChangeEvent, KeyboardEvent, useState} from "react";
+import AddBoxIcon from '@mui/icons-material/AddBox';
+import {TextField} from "@mui/material";
 
 
 type AddItemInputType = {
@@ -8,7 +10,7 @@ type AddItemInputType = {
 }
 
 
-export const AddItemInput = ({addItem}: AddItemInputType)=> {
+export const AddItemInput = ({addItem}: AddItemInputType) => {
 
     const [newItem, setNewItem] = useState("")
     const [error, setError] = useState(false)
@@ -35,13 +37,24 @@ export const AddItemInput = ({addItem}: AddItemInputType)=> {
     }
 
     return (
-        <div>
-            <input value={newItem}
-                   onChange={onChangeInputHandler}
-                   onKeyDown={onKeyInputHandler}
-                   className={error ? "error" : ""}
+        <div className={"add-form"}>
+            <TextField
+                variant="outlined"
+                size="small"
+                value={newItem}
+                onChange={onChangeInputHandler}
+                onKeyDown={onKeyInputHandler}
+                className={error ? "error" : ""}
+                error={!!error}
             />
-            <Button title={"+"} onClick={addItemHandler}/>
+            <Button
+                variant="contained"
+                size="large"
+                disableElevation
+                onClick={addItemHandler}
+                endIcon={<AddBoxIcon/>}
+            >ADD
+            </Button>
             {error && <h4 className={"errorMessage"}>input is empty</h4>}
         </div>
     )
